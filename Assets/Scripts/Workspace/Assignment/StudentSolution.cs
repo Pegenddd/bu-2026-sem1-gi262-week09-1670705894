@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-
 
 namespace Assignment
 {
@@ -23,14 +21,11 @@ namespace Assignment
             stack.Push(3);
 
             int count = stack.Count;
-            Debug.Log($"count: {count}");
             int popped = stack.Pop();
-            Debug.Log($"pop: {popped}");
             int peek = stack.Peek();
             int countAfterPeek = stack.Count;
 
             return (count, popped, peek, countAfterPeek);
-
         }
 
         public (int Count, int Dequeued, int Peek, int CountAfterPeek) LCT02_QueueSyntax()
@@ -54,20 +49,18 @@ namespace Assignment
             Action action2 = new Action { Name = "Action 2" };
             Action action3 = new Action { Name = "Action 3" };
 
-            Stack<Action> undoStack = new Stack<Action>();
-            undoStack.Push(action1);
-            undoStack.Push(action2);
-            undoStack.Push(action3);
+            Stack<Action> stack = new Stack<Action>();
+            stack.Push(action1);
+            stack.Push(action2);
+            stack.Push(action3);
 
-            int c = undoStack.Count;
-            string[] history = new string[c];
-            for (int i = 0; i < c; i++)
+            List<string> result = new List<string>();
+            while (stack.Count > 0)
             {
-                var popped = undoStack.Pop();
-                history[i] = popped.Name;
+                result.Add(stack.Pop().Name);
             }
 
-            return history;
+            return result.ToArray();
         }
 
         public string[] LCT04_ActionQueue()
@@ -81,58 +74,44 @@ namespace Assignment
             queue.Enqueue(action2);
             queue.Enqueue(action3);
 
-            int c = queue.Count;
-            string[] actionList = new string[c];
-            for (int i = 0; i < c; i++)
+            List<string> result = new List<string>();
+            while (queue.Count > 0)
             {
-                var dequeued = queue.Dequeue();
-                actionList[i] = dequeued.Name;
+                result.Add(queue.Dequeue().Name);
             }
-            return actionList;
+
+            return result.ToArray();
         }
 
         #endregion
-
 
         #region Assignment
 
         public string ASN01_ReverseString(string str)
         {
-            Stack<char> chars = new Stack<char>();
+            if (str == null) return null;
 
+            Stack<char> stack = new Stack<char>();
             foreach (char c in str)
             {
-                chars.Push(c);
+                stack.Push(c);
             }
 
-            string result = "";
-
-            while (chars.Count > 0)
+            char[] reversed = new char[stack.Count];
+            for (int i = 0; i < reversed.Length; i++)
             {
-                result += chars.Pop();
+                reversed[i] = stack.Pop();
             }
 
-            return result;
+            return new string(reversed);
         }
 
         public bool ASN02_StackPalindrome(string str)
         {
-            Stack<char> chars = new Stack<char>();
+            if (str == null) return false;
 
-            foreach (char c in str)
-            {
-                chars.Push(c);
-            }
-
-            foreach (char c in str)
-            {
-                if (chars.Pop() != c)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            string reversed = ASN01_ReverseString(str);
+            return str == reversed;
         }
 
         #endregion
@@ -141,23 +120,23 @@ namespace Assignment
 
         public bool EX01_ParenthesesChecker(string str)
         {
-            Stack<char> brackets = new Stack<char>();
+            if (str == null) return false;
 
+            Stack<char> stack = new Stack<char>();
             foreach (char c in str)
             {
                 if (c == '(' || c == '[' || c == '{')
                 {
-                    brackets.Push(c);
+                    stack.Push(c);
                 }
-                else
+                else if (c == ')' || c == ']' || c == '}')
                 {
-                    if (brackets.Count == 0)
+                    if (stack.Count == 0)
                     {
                         return false;
                     }
 
-                    char open = brackets.Pop();
-
+                    char open = stack.Pop();
                     if ((c == ')' && open != '(') ||
                         (c == ']' && open != '[') ||
                         (c == '}' && open != '{'))
@@ -167,10 +146,9 @@ namespace Assignment
                 }
             }
 
-            return brackets.Count == 0;
+            return stack.Count == 0;
         }
 
         #endregion
-
     }
 }
